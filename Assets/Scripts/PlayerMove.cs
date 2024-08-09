@@ -5,26 +5,29 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
-    [SerializeField] float rotationSpeed;
-    private Rigidbody2D rb;
-    private Vector2 moveVelocity;
+    Rigidbody2D rb;
+    Vector2 moveVelocity;
     [SerializeField] GameObject bullet;
     [SerializeField] Transform shootPosition;
+    [SerializeField] float timeBtwShoot;
+    float shootTimer;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        shootTimer = timeBtwShoot;
     }
 
     // Update is called once per frame
     void Update()
     {
-        PlayerRotation();
+        shootTimer += Time.deltaTime;
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && shootTimer >= timeBtwShoot)
         {
             Shoot();
+            shootTimer = 0;
         }
     }
 
@@ -38,14 +41,6 @@ public class PlayerMove : MonoBehaviour
         Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         moveVelocity = moveInput.normalized * moveSpeed;
         rb.MovePosition(rb.position + moveVelocity * Time.fixedDeltaTime);
-    }
-
-    void PlayerRotation()
-    {
-        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 180;
-        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
     }
 
     void Shoot()
