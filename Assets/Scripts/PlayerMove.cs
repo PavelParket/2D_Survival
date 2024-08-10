@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,17 +6,21 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
-    Rigidbody2D rb;
+    Rigidbody2D rigidbody2d;
     Vector2 moveVelocity;
     [SerializeField] GameObject bullet;
     [SerializeField] Transform shootPosition;
     [SerializeField] float timeBtwShoot;
     float shootTimer;
+    Animator animator;
+    SpriteRenderer spriteRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rigidbody2d = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         shootTimer = timeBtwShoot;
     }
 
@@ -39,8 +44,25 @@ public class PlayerMove : MonoBehaviour
     void Move()
     {
         Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        if (moveInput != Vector2.zero)
+        {
+            animator.SetBool("Run", true);
+        }
+        else
+        {
+            animator.SetBool("Run", false);
+        }
+
+        ScalePlayer(moveInput.x);
         moveVelocity = moveInput.normalized * moveSpeed;
-        rb.MovePosition(rb.position + moveVelocity * Time.fixedDeltaTime);
+        rigidbody2d.MovePosition(rigidbody2d.position + moveVelocity * Time.fixedDeltaTime);
+    }
+
+    void ScalePlayer(float x)
+    {
+        if (x == 1) spriteRenderer.flipX = false;
+        else if (x == -1) spriteRenderer.flipX = true;
     }
 
     void Shoot()
