@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     bool isDeath = false;
+    bool canAttack = false;
 
     [SerializeField] int health;
     [SerializeField] float attackDistance, runOutDistance, speed;
@@ -23,7 +24,7 @@ public class Enemy : MonoBehaviour
         player = PlayerMove.instance;
     }
 
-    private void FixedUpdate()
+    public virtual void FixedUpdate()
     {
         if (isDeath) return;
 
@@ -31,15 +32,18 @@ public class Enemy : MonoBehaviour
         {
             transform.position = Vector2.MoveTowards(transform.position, player.transform.position, speed * Time.fixedDeltaTime);
             animator.SetBool("Run", true);
+            canAttack = false;
         }
         else if (Vector2.Distance(transform.position, player.transform.position) < runOutDistance)
         {
             transform.position = Vector2.MoveTowards(transform.position, player.transform.position, -speed * Time.fixedDeltaTime);
             animator.SetBool("Run", true);
+            canAttack = false;
         }
         else
         {
             animator.SetBool("Run", false);
+            canAttack = true;
         }
 
         ScaleEnemy();
@@ -76,5 +80,10 @@ public class Enemy : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    public virtual bool CheckIfCanAttack()
+    {
+        return canAttack;
     }
 }

@@ -19,6 +19,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] Transform shootPosition;
     [SerializeField] float timeBtwShoot;
     [SerializeField] TextMeshProUGUI time;
+    [SerializeField] float health;
 
     private void Awake()
     {
@@ -79,5 +80,12 @@ public class PlayerMove : MonoBehaviour
     void Shoot()
     {
         Instantiate(bullet, shootPosition.position, shootPosition.rotation);
+    }
+
+    public void Damage(int damage)
+    {
+        health -= damage;
+
+        if (health <= 0) Destroy(gameObject);
     }
 }
