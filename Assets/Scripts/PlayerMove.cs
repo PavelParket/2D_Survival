@@ -2,20 +2,29 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerMove : MonoBehaviour
 {
+    public static PlayerMove instance;
+
+    private float shootTimer;
+    private Animator animator;
+    private SpriteRenderer spriteRenderer;
+    private Rigidbody2D rigidbody2d;
+    private Vector2 moveVelocity;
+
     [SerializeField] float moveSpeed;
-    Rigidbody2D rigidbody2d;
-    Vector2 moveVelocity;
     [SerializeField] GameObject bullet;
     [SerializeField] Transform shootPosition;
     [SerializeField] float timeBtwShoot;
-    float shootTimer;
-    Animator animator;
-    SpriteRenderer spriteRenderer;
+    [SerializeField] TextMeshProUGUI time;
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
         rigidbody2d = GetComponent<Rigidbody2D>();
@@ -34,6 +43,8 @@ public class PlayerMove : MonoBehaviour
             Shoot();
             shootTimer = 0;
         }
+
+        time.text = Time.time.ToString();
     }
 
     private void FixedUpdate()

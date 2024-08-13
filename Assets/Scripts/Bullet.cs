@@ -6,6 +6,7 @@ public class Bullet : MonoBehaviour
 {
     [SerializeField] float speed;
     [SerializeField] float deathTime;
+    [SerializeField] int damage;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +24,12 @@ public class Bullet : MonoBehaviour
     {
         if (collision.gameObject.tag == "Wall")
         {
+            Death();
+        }
+
+        if (collision.gameObject.tag == "Enemy")
+        {
+            collision.gameObject.GetComponent<Enemy>().Damage(damage);
             Death();
         }
     }

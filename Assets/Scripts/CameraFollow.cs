@@ -5,8 +5,8 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     [SerializeField] float minX, maxX, minY, maxY;
-    [SerializeField] Transform target;
     [SerializeField] float speed;
+    [SerializeField] Transform target;
 
     void FixedUpdate()
     {
