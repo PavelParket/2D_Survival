@@ -8,6 +8,20 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] float speed;
     [SerializeField] Transform target;
 
+    Animator animator;
+
+    public static CameraFollow instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    private void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
+
     void FixedUpdate()
     {
         if (!target) return;
@@ -18,5 +32,10 @@ public class CameraFollow : MonoBehaviour
                 Mathf.Clamp(target.position.y, minY, maxY),
                 -10),
             speed * Time.fixedDeltaTime);
+    }
+
+    public void ShakeCamera()
+    {
+        animator.Play("ShakeCamera");
     }
 }

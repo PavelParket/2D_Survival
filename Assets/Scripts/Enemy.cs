@@ -13,10 +13,11 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] int health;
     [SerializeField] float attackDistance, runOutDistance, speed;
+    [SerializeField] GameObject hitParticle;
 
     PlayerMove player;
 
-    private void Start()
+    public virtual void Start()
     {
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -60,6 +61,8 @@ public class Enemy : MonoBehaviour
         if (isDeath) return;
 
         health -= damage;
+
+        Instantiate(hitParticle, transform.position, Quaternion.identity);
 
         if (health <= 0) DeathAnimation();
     }

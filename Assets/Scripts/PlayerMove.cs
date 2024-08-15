@@ -20,6 +20,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float timeBtwShoot;
     [SerializeField] TextMeshProUGUI time;
     [SerializeField] float health;
+    [SerializeField] GameObject hitParticle;
 
     private void Awake()
     {
@@ -85,6 +86,10 @@ public class PlayerMove : MonoBehaviour
     public void Damage(int damage)
     {
         health -= damage;
+
+        Instantiate(hitParticle, transform.position, Quaternion.identity);
+
+        CameraFollow.instance.ShakeCamera();
 
         if (health <= 0) Destroy(gameObject);
     }

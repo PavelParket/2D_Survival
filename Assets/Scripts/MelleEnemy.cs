@@ -13,9 +13,10 @@ public class MelleEnemy : Enemy
     {
         base.FixedUpdate();
 
+        timer += Time.fixedDeltaTime;
+
         if (CheckIfCanAttack())
         {
-            timer += Time.fixedDeltaTime;
 
             if (timer >= timeBtwAttack)
             {
