@@ -11,6 +11,8 @@ public class Enemy : MonoBehaviour
     bool isDeath = false;
     bool canAttack = false;
 
+    Vector3 addRandPosToGo;
+
     [SerializeField] int health;
     [SerializeField] float attackDistance, runOutDistance, speed;
     [SerializeField] GameObject hitParticle;
@@ -23,6 +25,14 @@ public class Enemy : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         player = PlayerMove.instance;
+
+        StartCoroutine(SetRandomPos());
+        EnemyOrderInLayerManager.instance.Add(spriteRenderer);
+    }
+
+    private void OnDestroy()
+    {
+        EnemyOrderInLayerManager.instance.Remove(spriteRenderer);
     }
 
     public virtual void FixedUpdate()
@@ -31,13 +41,13 @@ public class Enemy : MonoBehaviour
 
         if (Vector2.Distance(transform.position, player.transform.position) > attackDistance)
         {
-            transform.position = Vector2.MoveTowards(transform.position, player.transform.position, speed * Time.fixedDeltaTime);
+            transform.position = Vector2.MoveTowards(transform.position, player.transform.position + addRandPosToGo, speed * Time.fixedDeltaTime);
             animator.SetBool("Run", true);
             canAttack = false;
         }
         else if (Vector2.Distance(transform.position, player.transform.position) < runOutDistance)
         {
-            transform.position = Vector2.MoveTowards(transform.position, player.transform.position, -speed * Time.fixedDeltaTime);
+            transform.position = Vector2.MoveTowards(transform.position, player.transform.position + addRandPosToGo, -speed * Time.fixedDeltaTime);
             animator.SetBool("Run", true);
             canAttack = false;
         }
@@ -88,5 +98,14 @@ public class Enemy : MonoBehaviour
     public virtual bool CheckIfCanAttack()
     {
         return canAttack;
+    }
+
+    IEnumerator SetRandomPos()
+    {
+        addRandPosToGo = new Vector3(Random.Range(-2, 2), Random.Range(-2, 2));
+
+        yield return new WaitForSeconds(1.5f);
+
+        StartCoroutine(SetRandomPos());
     }
 }

@@ -21,6 +21,8 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] TextMeshProUGUI time;
     [SerializeField] float health;
     [SerializeField] GameObject hitParticle;
+    [SerializeField] Sprite[] spriteMuzzleFlash;
+    [SerializeField] SpriteRenderer muzzleFlashSpriteRenderer;
 
     private void Awake()
     {
@@ -81,6 +83,18 @@ public class PlayerMove : MonoBehaviour
     void Shoot()
     {
         Instantiate(bullet, shootPosition.position, shootPosition.rotation);
+
+        StartCoroutine(SetMuzzleFlash());
+    }
+
+    IEnumerator SetMuzzleFlash()
+    {
+        muzzleFlashSpriteRenderer.enabled = true;
+        muzzleFlashSpriteRenderer.sprite = spriteMuzzleFlash[Random.Range(0, spriteMuzzleFlash.Length)];
+
+        yield return new WaitForSeconds(0.1f);
+
+        muzzleFlashSpriteRenderer.enabled = false;
     }
 
     public void Damage(int damage)
