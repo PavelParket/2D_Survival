@@ -9,13 +9,20 @@ public class MelleEnemy : Enemy
     [SerializeField] float timeBtwAttack, attackSpeed;
     [SerializeField] int damage;
 
+    public override void Start()
+    {
+        base.Start();
+
+        timer = timeBtwAttack;
+    }
+
     public override void FixedUpdate()
     {
         base.FixedUpdate();
 
         timer += Time.fixedDeltaTime;
 
-        if (CheckIfCanAttack())
+        if (CheckIfCanAttack() && player)
         {
 
             if (timer >= timeBtwAttack)
@@ -45,5 +52,10 @@ public class MelleEnemy : Enemy
 
             yield return null;
         }
+    }
+
+    public override IEnumerator DeathEnemy()
+    {
+        return base.DeathEnemy();
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -17,7 +18,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] float attackDistance, runOutDistance, speed;
     [SerializeField] GameObject hitParticle;
 
-    PlayerMove player;
+    protected PlayerMove player;
 
     public virtual void Start()
     {
@@ -37,15 +38,15 @@ public class Enemy : MonoBehaviour
 
     public virtual void FixedUpdate()
     {
-        if (isDeath) return;
+        if (isDeath || !player) return;
 
-        if (Vector2.Distance(transform.position, player.transform.position) > attackDistance)
+        if (player && Vector2.Distance(transform.position, player.transform.position) > attackDistance)
         {
             transform.position = Vector2.MoveTowards(transform.position, player.transform.position + addRandPosToGo, speed * Time.fixedDeltaTime);
             animator.SetBool("Run", true);
             canAttack = false;
         }
-        else if (Vector2.Distance(transform.position, player.transform.position) < runOutDistance)
+        else if (player && Vector2.Distance(transform.position, player.transform.position) < runOutDistance)
         {
             transform.position = Vector2.MoveTowards(transform.position, player.transform.position + addRandPosToGo, -speed * Time.fixedDeltaTime);
             animator.SetBool("Run", true);
@@ -77,13 +78,13 @@ public class Enemy : MonoBehaviour
         if (health <= 0) DeathAnimation();
     }
 
-    void DeathAnimation()
+    protected void DeathAnimation()
     {
         isDeath = true;
         animator.SetTrigger("Death");
     }
 
-    public IEnumerator DeathEnemy()
+    public virtual IEnumerator DeathEnemy()
     {
         float transparency = spriteRenderer.color.a;
         while (spriteRenderer.color.a != 0)
@@ -97,12 +98,12 @@ public class Enemy : MonoBehaviour
 
     public virtual bool CheckIfCanAttack()
     {
-        return canAttack;
+        return canAttack && !isDeath;
     }
 
     IEnumerator SetRandomPos()
     {
-        addRandPosToGo = new Vector3(Random.Range(-2, 2), Random.Range(-2, 2));
+        addRandPosToGo = new Vector3(Random.Range(-attackDistance + 0.1f, attackDistance - 0.1f), Random.Range(-attackDistance + 0.1f, attackDistance - 0.1f));
 
         yield return new WaitForSeconds(1.5f);
 
