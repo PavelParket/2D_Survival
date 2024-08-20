@@ -3,26 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviour
 {
     public static PlayerMove instance;
 
-    private float shootTimer;
+    private int maxHealth;
+    private float shootTimer, dashTimer;
+    private bool isDashing = false;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rigidbody2d;
     private Vector2 moveVelocity;
 
-    [SerializeField] float moveSpeed;
-    [SerializeField] GameObject bullet;
+    [SerializeField] int health;
+    [SerializeField] float moveSpeed, timeBtwShoot, dashForce, timeBtwDash, dashTime;
+    [SerializeField] GameObject bullet, hitParticle;
     [SerializeField] Transform shootPosition;
-    [SerializeField] float timeBtwShoot;
     [SerializeField] TextMeshProUGUI time;
-    [SerializeField] float health;
-    [SerializeField] GameObject hitParticle;
     [SerializeField] Sprite[] spriteMuzzleFlash;
     [SerializeField] SpriteRenderer muzzleFlashSpriteRenderer;
+    [SerializeField] Slider healthSlider, dashSlider;
 
     private void Awake()
     {
@@ -35,6 +37,10 @@ public class PlayerMove : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         shootTimer = timeBtwShoot;
+        dashTimer = timeBtwDash;
+        maxHealth = health;
+
+        UpdateHealth();
     }
 
     // Update is called once per frame
@@ -48,12 +54,26 @@ public class PlayerMove : MonoBehaviour
             shootTimer = 0;
         }
 
+        dashTimer += Time.deltaTime;
+        dashSlider.value = dashTimer / timeBtwDash;
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            if (dashTimer >= timeBtwDash)
+            {
+                dashTimer = 0;
+                ActivateDash();
+            }
+        }
+
         time.text = Time.time.ToString();
     }
 
     private void FixedUpdate()
     {
         Move();
+
+        if (isDashing) Dash();
     }
 
     void Move()
@@ -105,6 +125,30 @@ public class PlayerMove : MonoBehaviour
 
         CameraFollow.instance.ShakeCamera();
 
+        UpdateHealth();
+
         if (health <= 0) Destroy(gameObject);
+    }
+
+    void ActivateDash()
+    {
+        isDashing = true;
+
+        Invoke(nameof(DeActivateDash), dashTime);
+    }
+
+    void DeActivateDash()
+    {
+        isDashing = false;
+    }
+
+    void Dash()
+    {
+        rigidbody2d.AddForce(moveVelocity * Time.fixedDeltaTime * dashForce * 1000);
+    }
+
+    void UpdateHealth()
+    {
+        healthSlider.value = (float)health / maxHealth;
     }
 }
