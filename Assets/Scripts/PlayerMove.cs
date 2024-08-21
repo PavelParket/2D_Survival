@@ -21,7 +21,6 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float moveSpeed, timeBtwShoot, dashForce, timeBtwDash, dashTime;
     [SerializeField] GameObject bullet, hitParticle;
     [SerializeField] Transform shootPosition;
-    [SerializeField] TextMeshProUGUI time;
     [SerializeField] Sprite[] spriteMuzzleFlash;
     [SerializeField] SpriteRenderer muzzleFlashSpriteRenderer;
     [SerializeField] Slider healthSlider, dashSlider;
@@ -43,7 +42,6 @@ public class PlayerMove : MonoBehaviour
         UpdateHealth();
     }
 
-    // Update is called once per frame
     void Update()
     {
         shootTimer += Time.deltaTime;
@@ -65,8 +63,6 @@ public class PlayerMove : MonoBehaviour
                 ActivateDash();
             }
         }
-
-        time.text = Time.time.ToString();
     }
 
     private void FixedUpdate()

@@ -253,7 +253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 2
-  attackDistance: 2.1
+  attackDistance: 1.5
   runOutDistance: 1
   speed: 6
   hitParticle: {fileID: 6867260274484282646, guid: 71eeb9f679367f049b013204c0f5524c, type: 3}
