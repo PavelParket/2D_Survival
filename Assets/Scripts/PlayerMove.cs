@@ -11,7 +11,7 @@ public class PlayerMove : MonoBehaviour
 
     private int maxHealth;
     private float shootTimer, dashTimer;
-    private bool isDashing = false;
+    private bool isDashing = false, isInvincible = false;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rigidbody2d;
@@ -19,11 +19,12 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField] int health;
     [SerializeField] float moveSpeed, timeBtwShoot, dashForce, timeBtwDash, dashTime;
-    [SerializeField] GameObject bullet, hitParticle;
+    [SerializeField] GameObject bullet, hitParticle, defeatePanel;
     [SerializeField] Transform shootPosition;
     [SerializeField] Sprite[] spriteMuzzleFlash;
     [SerializeField] SpriteRenderer muzzleFlashSpriteRenderer;
     [SerializeField] Slider healthSlider, dashSlider;
+    [SerializeField] ParticleSystem footParticle;
 
     private void Awake()
     {
@@ -79,10 +80,16 @@ public class PlayerMove : MonoBehaviour
         if (moveInput != Vector2.zero)
         {
             animator.SetBool("Run", true);
+            footParticle.Pause();
+            footParticle.Play();
+            var emission = footParticle.emission;
+            emission.rateOverTime = 10;
         }
         else
         {
             animator.SetBool("Run", false);
+            var emission = footParticle.emission;
+            emission.rateOverTime = 0;
         }
 
         ScalePlayer(moveInput.x);
@@ -115,6 +122,8 @@ public class PlayerMove : MonoBehaviour
 
     public void Damage(int damage)
     {
+        if (isInvincible) return;
+
         health -= damage;
 
         Instantiate(hitParticle, transform.position, Quaternion.identity);
@@ -123,12 +132,17 @@ public class PlayerMove : MonoBehaviour
 
         UpdateHealth();
 
-        if (health <= 0) Destroy(gameObject);
+        if (health <= 0)
+        {
+            defeatePanel.SetActive(true);
+            Destroy(gameObject);
+        }
     }
 
     void ActivateDash()
     {
         isDashing = true;
+        isInvincible = true;
 
         Invoke(nameof(DeActivateDash), dashTime);
     }
@@ -136,6 +150,7 @@ public class PlayerMove : MonoBehaviour
     void DeActivateDash()
     {
         isDashing = false;
+        isInvincible = false;
     }
 
     void Dash()

@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour
 
     Vector3 addRandPosToGo;
 
-    [SerializeField] int health;
+    [SerializeField] int health, minCoins, maxCoins;
     [SerializeField] float attackDistance, runOutDistance, speed;
     [SerializeField] GameObject hitParticle;
 

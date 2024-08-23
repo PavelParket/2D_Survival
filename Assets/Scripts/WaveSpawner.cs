@@ -18,7 +18,7 @@ public class WaveSpawner : MonoBehaviour
     [SerializeField] Transform[] spawnPoints;
     [SerializeField] TextMeshProUGUI waveText;
 
-    private int currentWaveIndex;
+    [HideInInspector] public int currentWaveIndex;
 
     private bool isSpawnFinished = false;
     private bool isFreeTime = false;
