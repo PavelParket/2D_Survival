@@ -9,6 +9,8 @@ public class PlayerMove : MonoBehaviour
 {
     public static PlayerMove instance;
 
+    [HideInInspector] public int money;
+
     private int maxHealth;
     private float shootTimer, dashTimer;
     private bool isDashing = false, isInvincible = false;
@@ -25,13 +27,14 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] SpriteRenderer muzzleFlashSpriteRenderer;
     [SerializeField] Slider healthSlider, dashSlider;
     [SerializeField] ParticleSystem footParticle;
+    [SerializeField] TextMeshProUGUI moneyText;
 
     private void Awake()
     {
         instance = this;
     }
 
-    void Start()
+    private void Start()
     {
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -43,7 +46,7 @@ public class PlayerMove : MonoBehaviour
         UpdateHealth();
     }
 
-    void Update()
+    private void Update()
     {
         shootTimer += Time.deltaTime;
 
@@ -73,7 +76,7 @@ public class PlayerMove : MonoBehaviour
         if (isDashing) Dash();
     }
 
-    void Move()
+    private void Move()
     {
         Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
@@ -97,20 +100,20 @@ public class PlayerMove : MonoBehaviour
         rigidbody2d.MovePosition(rigidbody2d.position + moveVelocity * Time.fixedDeltaTime);
     }
 
-    void ScalePlayer(float x)
+    private void ScalePlayer(float x)
     {
         if (x == 1) spriteRenderer.flipX = false;
         else if (x == -1) spriteRenderer.flipX = true;
     }
 
-    void Shoot()
+    private void Shoot()
     {
         Instantiate(bullet, shootPosition.position, shootPosition.rotation);
 
         StartCoroutine(SetMuzzleFlash());
     }
 
-    IEnumerator SetMuzzleFlash()
+    private IEnumerator SetMuzzleFlash()
     {
         muzzleFlashSpriteRenderer.enabled = true;
         muzzleFlashSpriteRenderer.sprite = spriteMuzzleFlash[Random.Range(0, spriteMuzzleFlash.Length)];
@@ -139,7 +142,7 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    void ActivateDash()
+    private void ActivateDash()
     {
         isDashing = true;
         isInvincible = true;
@@ -147,19 +150,25 @@ public class PlayerMove : MonoBehaviour
         Invoke(nameof(DeActivateDash), dashTime);
     }
 
-    void DeActivateDash()
+    private void DeActivateDash()
     {
         isDashing = false;
         isInvincible = false;
     }
 
-    void Dash()
+    private void Dash()
     {
         rigidbody2d.AddForce(moveVelocity * Time.fixedDeltaTime * dashForce * 1000);
     }
 
-    void UpdateHealth()
+    private void UpdateHealth()
     {
         healthSlider.value = (float)health / maxHealth;
+    }
+
+    public void AddCoins(int value)
+    {
+        money += value;
+        moneyText.text = "Balance: " + money;
     }
 }

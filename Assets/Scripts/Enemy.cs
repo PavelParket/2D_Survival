@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour
         EnemyOrderInLayerManager.instance.Add(spriteRenderer);
     }
 
-    private void OnDestroy()
+    protected void OnDestroy()
     {
         EnemyOrderInLayerManager.instance.Remove(spriteRenderer);
     }
@@ -61,7 +61,7 @@ public class Enemy : MonoBehaviour
         ScaleEnemy();
     }
 
-    void ScaleEnemy()
+    protected void ScaleEnemy()
     {
         if (transform.position.x > player.transform.position.x) spriteRenderer.flipX = true;
         else if (transform.position.x < player.transform.position.x) spriteRenderer.flipX = false;
@@ -81,6 +81,7 @@ public class Enemy : MonoBehaviour
     protected void DeathAnimation()
     {
         isDeath = true;
+        player.AddCoins(Random.Range(minCoins, maxCoins));
         animator.SetTrigger("Death");
     }
 

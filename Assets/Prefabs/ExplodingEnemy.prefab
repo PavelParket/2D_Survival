@@ -253,6 +253,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 1
+  minCoins: 1
+  maxCoins: 7
   attackDistance: 0.5
   runOutDistance: 0
   speed: 7
