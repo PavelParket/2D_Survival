@@ -253,7 +253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d4e4f5a523c5ed4ab8d91ad15e7dc10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 2
+  health: 3
   minCoins: 10
   maxCoins: 20
   attackDistance: 6

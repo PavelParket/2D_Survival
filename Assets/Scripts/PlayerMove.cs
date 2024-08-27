@@ -9,10 +9,10 @@ public class PlayerMove : MonoBehaviour
 {
     public static PlayerMove instance;
 
-    [HideInInspector] public int money;
+    [HideInInspector] public int money = 0;
 
     private int maxHealth;
-    private float shootTimer, dashTimer;
+    private float shootTimer, tripleShootTimer, dashTimer;
     private bool isDashing = false, isInvincible = false;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
@@ -20,7 +20,7 @@ public class PlayerMove : MonoBehaviour
     private Vector2 moveVelocity;
 
     [SerializeField] int health;
-    [SerializeField] float moveSpeed, timeBtwShoot, dashForce, timeBtwDash, dashTime;
+    [SerializeField] float moveSpeed, timeBtwShoot, timeBtwTripleShoot, dashForce, timeBtwDash, dashTime;
     [SerializeField] GameObject bullet, hitParticle, defeatePanel;
     [SerializeField] Transform shootPosition;
     [SerializeField] Sprite[] spriteMuzzleFlash;
@@ -42,6 +42,7 @@ public class PlayerMove : MonoBehaviour
         shootTimer = timeBtwShoot;
         dashTimer = timeBtwDash;
         maxHealth = health;
+        Shop.instance.buyRifle += UpdateTimeBtwShoot;
 
         UpdateHealth();
     }
@@ -49,11 +50,18 @@ public class PlayerMove : MonoBehaviour
     private void Update()
     {
         shootTimer += Time.deltaTime;
+        tripleShootTimer += Time.deltaTime;
 
         if (Input.GetMouseButtonDown(0) && shootTimer >= timeBtwShoot)
         {
             Shoot();
             shootTimer = 0;
+        }
+
+        if (Input.GetMouseButtonDown(1) && tripleShootTimer >= timeBtwTripleShoot && PlayerPrefs.GetInt("Position3") == 1)
+        {
+            TripleShoot();
+            tripleShootTimer = 0;
         }
 
         dashTimer += Time.deltaTime;
@@ -109,6 +117,19 @@ public class PlayerMove : MonoBehaviour
     private void Shoot()
     {
         Instantiate(bullet, shootPosition.position, shootPosition.rotation);
+
+        StartCoroutine(SetMuzzleFlash());
+    }
+
+    private void TripleShoot()
+    {
+        Instantiate(bullet, shootPosition.position, shootPosition.rotation);
+        Quaternion rotation = Quaternion.Euler(0, 0, shootPosition.rotation.eulerAngles.z + 15);
+        Instantiate(bullet, shootPosition.position, rotation);
+        rotation = Quaternion.Euler(0, 0, shootPosition.rotation.eulerAngles.z - 15);
+        Instantiate(bullet, shootPosition.position, rotation);
+
+        CameraFollow.instance.ShakeCamera();
 
         StartCoroutine(SetMuzzleFlash());
     }
@@ -170,5 +191,21 @@ public class PlayerMove : MonoBehaviour
     {
         money += value;
         moneyText.text = "Balance: " + money;
+    }
+
+    public void UpdateTimeBtwShoot()
+    {
+        timeBtwShoot /= 2;
+        timeBtwTripleShoot -= 0.5f;
+    }
+
+    public void Heal(int value)
+    {
+        health += value;
+
+        if (health > maxHealth)
+            health = maxHealth;
+
+        UpdateHealth();
     }
 }

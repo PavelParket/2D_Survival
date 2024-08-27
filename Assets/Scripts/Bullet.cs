@@ -34,7 +34,8 @@ public class Bullet : MonoBehaviour
 
         if (collision.gameObject.tag == "Enemy" && type == Type.Player)
         {
-            collision.gameObject.GetComponent<Enemy>().Damage(damage);
+            int damageModificator = PlayerPrefs.GetInt("Position0") == 1 ? damage += 2 : damage;
+            collision.gameObject.GetComponent<Enemy>().Damage(damageModificator);
             Death();
         }
 

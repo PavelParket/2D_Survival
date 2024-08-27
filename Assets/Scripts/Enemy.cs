@@ -63,8 +63,10 @@ public class Enemy : MonoBehaviour
 
     protected void ScaleEnemy()
     {
-        if (transform.position.x > player.transform.position.x) spriteRenderer.flipX = true;
-        else if (transform.position.x < player.transform.position.x) spriteRenderer.flipX = false;
+        if (transform.position.x > player.transform.position.x)
+            spriteRenderer.flipX = true;
+        else if (transform.position.x < player.transform.position.x)
+            spriteRenderer.flipX = false;
     }
 
     public void Damage(int damage)
@@ -75,13 +77,18 @@ public class Enemy : MonoBehaviour
 
         Instantiate(hitParticle, transform.position, Quaternion.identity);
 
-        if (health <= 0) DeathAnimation();
+        if (health <= 0)
+            DeathAnimation();
     }
 
     protected void DeathAnimation()
     {
         isDeath = true;
         player.AddCoins(Random.Range(minCoins, maxCoins));
+
+        if (PlayerPrefs.GetInt("Position2") == 1)
+            player.Heal(1);
+
         animator.SetTrigger("Death");
     }
 
