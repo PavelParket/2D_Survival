@@ -76,14 +76,15 @@ public class Shop : MonoBehaviour
 
         if (index == 1)
             buyRifle.Invoke();
+
+        PlayerMove.instance.AddCoins(-costs[index]);
+        Check();
     }
 
     public void Check()
     {
         for (int i = 0; i < buttons.Length; i++)
         {
-            if (PlayerPrefs.GetInt("Position" + i) == 1) break;
-
             if (PlayerMove.instance.money < costs[i])
             {
                 buttons[i].interactable = false;
@@ -93,6 +94,12 @@ public class Shop : MonoBehaviour
             {
                 buttons[i].interactable = true;
                 boughtTexts[i].text = "Buy";
+            }
+
+            if (PlayerPrefs.GetInt("Position" + i) == 1)
+            {
+                buttons[i].interactable = false;
+                boughtTexts[i].text = "Sold";
             }
         }
     }
