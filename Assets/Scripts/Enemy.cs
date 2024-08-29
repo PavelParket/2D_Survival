@@ -40,15 +40,17 @@ public class Enemy : MonoBehaviour
     {
         if (isDeath || !player) return;
 
-        if (player && Vector2.Distance(transform.position, player.transform.position) > attackDistance)
+        if (Vector2.Distance(transform.position, player.transform.position) > attackDistance)
         {
-            transform.position = Vector2.MoveTowards(transform.position, player.transform.position + addRandPosToGo, speed * Time.fixedDeltaTime);
+            //transform.position = Vector2.MoveTowards(transform.position, player.transform.position + addRandPosToGo, speed * Time.fixedDeltaTime);
+            rigidbody2d.MovePosition(Vector2.MoveTowards(transform.position, player.transform.position + addRandPosToGo, speed * Time.fixedDeltaTime));
             animator.SetBool("Run", true);
             canAttack = false;
         }
-        else if (player && Vector2.Distance(transform.position, player.transform.position) < runOutDistance)
+        else if (Vector2.Distance(transform.position, player.transform.position) < runOutDistance)
         {
-            transform.position = Vector2.MoveTowards(transform.position, player.transform.position + addRandPosToGo, -speed * Time.fixedDeltaTime);
+            //transform.position = Vector2.MoveTowards(transform.position, player.transform.position + addRandPosToGo, -speed * Time.fixedDeltaTime);
+            rigidbody2d.MovePosition(Vector2.MoveTowards(transform.position, player.transform.position + addRandPosToGo, -speed * Time.fixedDeltaTime));
             animator.SetBool("Run", true);
             canAttack = false;
         }
@@ -116,5 +118,13 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         StartCoroutine(SetRandomPos());
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            Debug.Log("Враг столкнулся со стеной!");
+        }
     }
 }

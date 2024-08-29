@@ -195,7 +195,7 @@ public class PlayerMove : MonoBehaviour
 
     public void UpdateTimeBtwShoot()
     {
-        timeBtwShoot /= 2;
+        timeBtwShoot = 0.12f;
         timeBtwTripleShoot -= 0.5f;
     }
 
