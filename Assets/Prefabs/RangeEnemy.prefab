@@ -261,7 +261,7 @@ MonoBehaviour:
   speed: 5
   hitParticle: {fileID: 6867260274484282646, guid: 71eeb9f679367f049b013204c0f5524c, type: 3}
   timeBtwAttack: 2
-  damage: 1
+  damage: 5
   shootPosition: {fileID: 3652295669988100988}
   bullet: {fileID: 326493438374773311, guid: 0e28ef01aa4b0884a9b3ada0078ed6c7, type: 3}
 --- !u!1 &6292350753079946683

@@ -11,7 +11,7 @@ public class PlayerMove : MonoBehaviour
 
     [HideInInspector] public int money = 0;
 
-    private int maxHealth;
+    private int maxHealth, maxHealPotions;
     private float shootTimer, tripleShootTimer, dashTimer;
     private bool isDashing = false, isInvincible = false;
     private Animator animator;
@@ -19,15 +19,15 @@ public class PlayerMove : MonoBehaviour
     private Rigidbody2D rigidbody2d;
     private Vector2 moveVelocity;
 
-    [SerializeField] int health;
+    [SerializeField] int health, healPotions;
     [SerializeField] float moveSpeed, timeBtwShoot, timeBtwTripleShoot, dashForce, timeBtwDash, dashTime;
-    [SerializeField] GameObject bullet, hitParticle, defeatePanel;
+    [SerializeField] GameObject bullet, hitParticle, healParticle, defeatePanel;
     [SerializeField] Transform shootPosition;
     [SerializeField] Sprite[] spriteMuzzleFlash;
     [SerializeField] SpriteRenderer muzzleFlashSpriteRenderer;
     [SerializeField] Slider healthSlider, dashSlider;
     [SerializeField] ParticleSystem footParticle;
-    [SerializeField] TextMeshProUGUI moneyText;
+    [SerializeField] TextMeshProUGUI moneyText, healPotionsText;
 
     private void Awake()
     {
@@ -42,6 +42,7 @@ public class PlayerMove : MonoBehaviour
         shootTimer = timeBtwShoot;
         dashTimer = timeBtwDash;
         maxHealth = health;
+        maxHealPotions = 5;
         Shop.instance.buyRifle += UpdateTimeBtwShoot;
 
         UpdateHealth();
@@ -74,6 +75,14 @@ public class PlayerMove : MonoBehaviour
                 dashTimer = 0;
                 ActivateDash();
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (health == maxHealth || healPotions == 0)
+                return;
+
+            Heal();
         }
     }
 
@@ -207,5 +216,26 @@ public class PlayerMove : MonoBehaviour
             health = maxHealth;
 
         UpdateHealth();
+    }
+
+    public void Heal()
+    {
+        Heal(3);
+        AddHealPotions(-1);
+        Instantiate(healParticle, transform.position, Quaternion.identity);
+    }
+
+    public void AddHealPotions(int value)
+    {
+        healPotions += value;
+        healPotionsText.text = ": " + healPotions;
+    }
+
+    public bool CheckHealPotionsCount()
+    {
+        if (healPotions == maxHealPotions) 
+            return true;
+        else
+            return false;
     }
 }

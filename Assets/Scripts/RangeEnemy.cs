@@ -7,7 +7,6 @@ public class RangeEnemy : Enemy
     private float timer;
 
     [SerializeField] float timeBtwAttack;
-    [SerializeField] int damage;
     [SerializeField] Transform shootPosition;
     [SerializeField] GameObject bullet;
 

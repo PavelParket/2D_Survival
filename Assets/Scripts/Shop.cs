@@ -42,7 +42,7 @@ public class Shop : MonoBehaviour
         }*/
 
         DeletePlayerPrefs();
-        for (int i = 0; i < buttons.Length; i++) 
+        for (int i = 0; i < buttons.Length; i++)
             PlayerPrefs.SetInt("Position" + i, 0);
 
         shopPanel.SetActive(false);
@@ -69,13 +69,20 @@ public class Shop : MonoBehaviour
 
     public void Buy(int index)
     {
-        buttons[index].interactable = false;
-        boughtTexts[index].text = "Sold";
+        if (index == 4)
+        {
+            PlayerMove.instance.AddHealPotions(1);
+        }
+        else
+        {
+            buttons[index].interactable = false;
+            boughtTexts[index].text = "Sold";
 
-        PlayerPrefs.SetInt("Position" + index, 1);
+            PlayerPrefs.SetInt("Position" + index, 1);
 
-        if (index == 1)
-            buyRifle.Invoke();
+            if (index == 1)
+                buyRifle.Invoke();
+        }
 
         PlayerMove.instance.AddCoins(-costs[index]);
         Check();
@@ -100,6 +107,15 @@ public class Shop : MonoBehaviour
             {
                 buttons[i].interactable = false;
                 boughtTexts[i].text = "Sold";
+            }
+
+            if (i == 4)
+            {
+                if (PlayerMove.instance.CheckHealPotionsCount())
+                {
+                    buttons[i].interactable = false;
+                    boughtTexts[i].text = "Max";
+                }
             }
         }
     }

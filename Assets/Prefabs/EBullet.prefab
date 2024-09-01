@@ -215,5 +215,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   deathTime: 2
-  damage: 1
+  damage: 5
   type: 1

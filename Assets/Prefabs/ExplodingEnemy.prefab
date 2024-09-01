@@ -260,7 +260,7 @@ MonoBehaviour:
   speed: 7
   hitParticle: {fileID: 6867260274484282646, guid: 71eeb9f679367f049b013204c0f5524c, type: 3}
   radius: 1.5
-  damage: 2
+  damage: 5
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 64
